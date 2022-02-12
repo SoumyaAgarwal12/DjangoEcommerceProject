@@ -33,3 +33,6 @@ def index(request):
     print(prodCategory)
     param = {"no_of_slides" : slides, "product" : myProducts, "range_for_slides" : range(0,slides), "prodCat" : prodCategory, "productsCount": range(0,productsCount)}
     return render(request,'shop/shopIndex.html',param)
+
+def addToCart(request):
+    return HttpResponse("HELLO ATC")

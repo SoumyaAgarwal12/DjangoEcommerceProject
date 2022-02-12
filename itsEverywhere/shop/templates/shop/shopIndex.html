@@ -1,34 +1,81 @@
 {% extends '../index.html' %}
-{% block css %} 
+{% block css %}
 <style>
-  /* body{
-    background-color: black;
-  } */
-  .homeslider{
+  .homeslider {
     display: flex;
     /* flex-direction: column; */
     justify-content: center;
     align-items: center;
   }
-  .homeslider1{
+
+  .homeslider1 {
     display: flex;
     /* flex-direction: column; */
     justify-content: center;
     align-items: center;
   }
+
   .slick-prev:before,
-.slick-next:before {
+  .slick-next:before {
     /* font-family:initial!important; */
-    color:black; 
-}
-.slick-prev {
+    color: black;
+  }
+
+  .slick-prev {
     left: -65px;
-}
-.slick-next {
+  }
+
+  .slick-next {
     right: -65px;
-}
-  </style>
+  }
+
+  .addToCart {
+    color: white;
+    display: flex;
+  }
+
+  .cartImg {
+    margin-right: 8px;
+  }
+
+  .cartCount {
+    font-size: 14px;
+    margin-left: -5px;
+    margin-top: -8px;
+  }
+
+  .addCart,
+  .minusCart {
+    font-size: 22px;
+    /* display:none; */
+  }
+
+  .addCart {
+    margin-right: 10px;
+  }
+
+  .minusCart {
+    margin-left: 10px;
+  }
+
+  .atcCnt {
+    /* display: none; */
+  }
+
+  .cartD {
+    display: none;
+  }
+</style>
 {% endblock css %}
+
+{% block addToCart%}
+{% load static %}
+<div class="addToCart">
+  <a href="addToCart/"><img src="{%static 'shop/shopping__cart.png'%}" alt="shopping-cart" width="35px" height="28px"
+      class="cartImg"></a>
+  <h5 class="cartCount">0</h5>
+</div>
+{% endblock addToCart%}
 
 {% block body %}
 {% load static %}
@@ -39,14 +86,22 @@
 <div class="container mySlider" style="border: 2px solid red;">
   {% for prod, range in prodCat %}
   <!-- <h1>{{i.category}}</h1> -->
-  <div class="homeslider" >
+  <div class="homeslider">
     {% for i in prod %}
     <div class="card" style="width: 18rem;">
       <img class="card-img-top" src="/media/{{i.product_image}}" width="500px" height="300px" alt="Card image cap">
       <div class="card-body">
         <h5 class="card-title">{{i.product_name}}</h5>
         <p class="card-text">{{i.desc}}</p>
-        <a href="#" class="btn btn-primary">Add to Cart</a>
+        <a href="#" id="pr{{i.id}}" class="btn btn-primary cart">
+          <span class="atc atcD">Add to Cart</span>
+          <span class="addCart cartD">+</span>
+          <span class="atcCnt cartD">0</span>
+          <span class="minusCart cartD">-</span>
+        </a>
+        <!-- <a href="#" id="pr{{i.id}}" class="btn btn-primary cart cartD"><span class="addCart">+</span><span class="atcCnt">0</span><span class="minusCart">-</span></a> -->
+        {% load static %}
+        <!-- <img src="{%static 'shop/addImg.png'%}" alt="shopping-cart" width="15px" height="15px"> -->
       </div>
     </div>
     {% endfor %}
@@ -64,41 +119,150 @@
 <script>
   $(document).ready(function () {
     var slidesCount = $("#slides").val();
-$('.homeslider').slick({
-  dots: true,
-  infinite: false,
-  speed: 300,
-  slidesToShow: 3,
-  slidesToScroll: 3,
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        infinite: true,
-        dots: true
-      }
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2
-      }
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1
-      }
+    $('.homeslider').slick({
+      dots: true,
+      infinite: false,
+      speed: 300,
+      slidesToShow: 3,
+      slidesToScroll: 3,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 3,
+            infinite: true,
+            dots: true
+          }
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1
+          }
+        }
+        // You can unslick at a given breakpoint now by adding:
+        // settings: "unslick"
+        // instead of a settings object
+      ]
+    });
+  });
+  // atcProducts = {}
+  if (localStorage.getItem('cartCount') == null) {
+    cartCount = 0;
+  } else {
+    cartCount = JSON.parse(localStorage.getItem('cartCount'));
+  }
+  console.log("CC" + cartCount);
+  atcCount = cartCount;
+  $(".cartCount").html(atcCount);
+
+  $(".atcD").on("click", function () {
+    if (localStorage.getItem('cart') == null) {
+      cart = {};
+    } else {
+      cart = JSON.parse(localStorage.getItem('cart'));
     }
-    // You can unslick at a given breakpoint now by adding:
-    // settings: "unslick"
-    // instead of a settings object
-  ]
-});
+    // console.log(cart);
+    getProduct = $(this).parent().attr("id");
+    if (cart[getProduct] == undefined || cart[getProduct] == 0) {
+      cart[getProduct] = 1;
+      atcCount++;
+    }
+    // else {
+    //   cart[getProduct] += 1;
+    //   atcCount++;
+    // }
+
+    // console.log(cart);
+    // console.log(atcCount);
+    $(".cartCount").html(atcCount);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cartCount', JSON.stringify(atcCount));
+
+
+    // var lngth = $(this).children().length;
+    // for(var i = 0; i < lngth; i++){
+    //   var a = $(this).children()[i];
+    //   if($(a).hasClass("cartD")){
+    //     $(a).hide();
+    //   }
+    //   if($(a).hasClass("atcD")){
+    //     $(a).show();
+    //   }
+    // }
+
+
+    cartItem = JSON.parse(localStorage.getItem('cart'));
+    var a = cartItem[$(this).parent().attr("id")];
+    // console.log("HELLO"+a);
+    if(a <= 0){
+      $(this).parent().find('.atcD').show();
+      $(this).parent().find('.cartD').hide();
+    } else{
+      $(this).parent().find('.atcD').hide();
+      $(this).parent().find('.cartD').show();
+    }
+    $(this).parent().find('.atcCnt').html(a);
+    // $(this).html(cartCount);
+    // $(this).hasClass("addCart")
+  });
+
+  $(".addCart").on("click", function () {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    getProduct = $(this).parent().attr("id");
+    cart[getProduct] += 1;
+    atcCount++;
+    $(".cartCount").html(atcCount);
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cartCount', JSON.stringify(atcCount));
+
+    cartItem = JSON.parse(localStorage.getItem('cart'));
+    var a = cartItem[$(this).parent().attr("id")];
+    $(this).siblings(".atcCnt").html(a);
+    // $('.atcCnt').html(a);
+  });
+
+  $(".minusCart").on("click", function () {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    // cart = Object.entries(cart); ??
+    getProduct = $(this).parent().attr("id");
+    cart[getProduct] -= 1;
+    atcCount--;
+    $(".cartCount").html(atcCount);
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('cartCount', JSON.stringify(atcCount));
+    if (atcCount == 0) {
+      $(".cartD").hide();
+      $(".atcD").show();
+      // const filterZeroCount = cart.filter(x => x.getProduct != getProduct); ??
+      // let index = cart.findIndex(x => x.getProduct == 3);
+      // cart = cart.splice(index, 1);
+      localStorage.removeItem('cart', JSON.stringify(cart));
+    }
+
+    cartItem = JSON.parse(localStorage.getItem('cart'));
+    if(cartItem != null){
+      var a = cartItem[$(this).parent().attr("id")];
+      if(a == 0){
+        $(this).siblings(".cartD").hide();
+        $(this).hide();
+        $(this).siblings(".atcD").show();
+        // $('.atcCnt').html(a);
+      }
+      $(this).siblings(".atcCnt").html(a);
+    }
+    
   });
 </script>
 {% endblock js %}
