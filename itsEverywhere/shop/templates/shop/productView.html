@@ -1,0 +1,32 @@
+{% extends '../index.html' %}
+{% block css %}
+<style>
+    .myProduct{
+        display: flex;
+        justify-content: space-between;
+        /* align-items: center; */
+    }
+    .imgProduct{
+        margin-right: 24px;
+    }
+    .productPrice{
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock css %}
+
+{% block body %}
+<div class="container">
+    <h1>{{product}}</h1>
+    <div class="myProduct">
+        <div class="imgProduct">
+            <img src="/media/{{product.product_image}}" width="400px" height="400px">
+        </div>
+        <div class="aboutProduct">
+            <div class="productPrice"><b>Price : &#x20b9 {{product.price}}</b></div>
+            <div class="productDesc">{{product.desc}}</div>
+        </div>
+    </div>
+
+</div>
+{% endblock body %}

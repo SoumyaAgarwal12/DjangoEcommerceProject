@@ -1,3 +1,6 @@
+# from crypt import methods
+from inspect import Parameter
+from django.http import HttpResponse
 from django.shortcuts import render
 
 def index(request):

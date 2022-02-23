@@ -92,13 +92,14 @@
       <img class="card-img-top" src="/media/{{i.product_image}}" width="500px" height="300px" alt="Card image cap">
       <div class="card-body">
         <h5 class="card-title">{{i.product_name}}</h5>
-        <p class="card-text">{{i.desc}}</p>
+        <p class="card-text">{{i.desc|slice:"0:85"}}...</p>
         <a href="#" id="pr{{i.id}}" class="btn btn-primary cart">
           <span class="atc atcD">Add to Cart</span>
           <span class="addCart cartD">+</span>
           <span class="atcCnt cartD">0</span>
           <span class="minusCart cartD">-</span>
         </a>
+        <a href="product/{{i.id}}" class="btn btn-primary cart">View Product</a>
         <!-- <a href="#" id="pr{{i.id}}" class="btn btn-primary cart cartD"><span class="addCart">+</span><span class="atcCnt">0</span><span class="minusCart">-</span></a> -->
         {% load static %}
         <!-- <img src="{%static 'shop/addImg.png'%}" alt="shopping-cart" width="15px" height="15px"> -->
@@ -177,28 +178,11 @@
       cart[getProduct] = 1;
       atcCount++;
     }
-    // else {
-    //   cart[getProduct] += 1;
-    //   atcCount++;
-    // }
-
     // console.log(cart);
     // console.log(atcCount);
     $(".cartCount").html(atcCount);
     localStorage.setItem('cart', JSON.stringify(cart));
     localStorage.setItem('cartCount', JSON.stringify(atcCount));
-
-
-    // var lngth = $(this).children().length;
-    // for(var i = 0; i < lngth; i++){
-    //   var a = $(this).children()[i];
-    //   if($(a).hasClass("cartD")){
-    //     $(a).hide();
-    //   }
-    //   if($(a).hasClass("atcD")){
-    //     $(a).show();
-    //   }
-    // }
 
 
     cartItem = JSON.parse(localStorage.getItem('cart'));
@@ -229,7 +213,6 @@
     cartItem = JSON.parse(localStorage.getItem('cart'));
     var a = cartItem[$(this).parent().attr("id")];
     $(this).siblings(".atcCnt").html(a);
-    // $('.atcCnt').html(a);
   });
 
   $(".minusCart").on("click", function () {
@@ -245,9 +228,6 @@
     if (atcCount == 0) {
       $(".cartD").hide();
       $(".atcD").show();
-      // const filterZeroCount = cart.filter(x => x.getProduct != getProduct); ??
-      // let index = cart.findIndex(x => x.getProduct == 3);
-      // cart = cart.splice(index, 1);
       localStorage.removeItem('cart', JSON.stringify(cart));
     }
 
@@ -258,7 +238,6 @@
         $(this).siblings(".cartD").hide();
         $(this).hide();
         $(this).siblings(".atcD").show();
-        // $('.atcCnt').html(a);
       }
       $(this).siblings(".atcCnt").html(a);
     }
