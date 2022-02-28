@@ -70,11 +70,36 @@
 
 {% block addToCart%}
 {% load static %}
-<div class="addToCart">
+<!-- Button trigger modal -->
+<div class="addToCart" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <img src="{%static 'shop/shopping__cart.png'%}" alt="shopping-cart" width="35px" height="28px"
+        class="cartImg">
+    <h5 class="cartCount">0</h5>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Checkout</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearCart()">Clear Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="addToCart">
   <a href="addToCart/"><img src="{%static 'shop/shopping__cart.png'%}" alt="shopping-cart" width="35px" height="28px"
       class="cartImg"></a>
   <h5 class="cartCount">0</h5>
-</div>
+</div> -->
 {% endblock addToCart%}
 
 {% block body %}
@@ -157,14 +182,52 @@
     });
   });
   // atcProducts = {}
-  if (localStorage.getItem('cartCount') == null) {
-    cartCount = 0;
-  } else {
-    cartCount = JSON.parse(localStorage.getItem('cartCount'));
+ 
+
+  manageAddToCart();
+  updateCartCount();
+
+  function clearCart(){
+    localStorage.removeItem('cart');
+    localStorage.removeItem('cartCount');
+    updateCartCount();
+    $('.atcD').show();
+    $('.cartD').hide();
   }
-  console.log("CC" + cartCount);
-  atcCount = cartCount;
-  $(".cartCount").html(atcCount);
+
+  function updateCartCount(){
+    if (localStorage.getItem('cartCount') == null) {
+      cartCount = 0;
+    } else {
+      cartCount = JSON.parse(localStorage.getItem('cartCount'));
+    }
+    // console.log("CC" + cartCount);
+    atcCount = cartCount;
+    $(".cartCount").html(atcCount);
+  }
+
+  function manageAddToCart(){  
+    if (localStorage.getItem('cart') == null) {
+      cart = {};
+    } else {
+      cart = JSON.parse(localStorage.getItem('cart'));
+    }
+
+    for (var item in cart){
+      getProductId = item;
+      getProductCount = cart[item];
+
+      if(getProductCount <= 0){
+        $("#"+getProductId).children('.atcD').show();
+        $("#"+getProductId).children('.cartD').hide();
+      } else{
+        $("#"+getProductId).children('.atcD').hide();
+        $("#"+getProductId).children('.cartD').show();
+      }
+      $("#"+getProductId).children('.atcCnt').html(getProductCount);
+    }
+
+  }
 
   $(".atcD").on("click", function () {
     if (localStorage.getItem('cart') == null) {
@@ -184,18 +247,8 @@
     localStorage.setItem('cart', JSON.stringify(cart));
     localStorage.setItem('cartCount', JSON.stringify(atcCount));
 
+    manageAddToCart();
 
-    cartItem = JSON.parse(localStorage.getItem('cart'));
-    var a = cartItem[$(this).parent().attr("id")];
-    // console.log("HELLO"+a);
-    if(a <= 0){
-      $(this).parent().find('.atcD').show();
-      $(this).parent().find('.cartD').hide();
-    } else{
-      $(this).parent().find('.atcD').hide();
-      $(this).parent().find('.cartD').show();
-    }
-    $(this).parent().find('.atcCnt').html(a);
     // $(this).html(cartCount);
     // $(this).hasClass("addCart")
   });
