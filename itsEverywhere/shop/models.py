@@ -24,3 +24,17 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
+class Registration(models.Model):
+    reg_id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
+    password = models.CharField(max_length=80)
+    address1 = models.CharField(max_length=200)
+    address2 = models.CharField(max_length=200)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.username

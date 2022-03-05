@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Product, Contact
+from .models import Product, Contact, Registration
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import *
 # Create your views here.
 # def index(request):
 #     return HttpResponse("HELLO SHop")
@@ -54,3 +57,25 @@ def contact(request):
         ourContact = Contact(name=name, email=email, phone=phone,desc=desc)
         ourContact.save()
     return render(request,"shop/contact.html")
+
+
+class RegistrationAPI(APIView):
+    def get(self,request):
+        registerQueryset = Registration.objects.all()
+        # print("MYGET")
+        # print(registerQueryset)
+        serializer = RegistrationSerializer(registerQueryset, many=True)
+
+        return Response({"status":200, "payload":serializer.data})
+
+    def post(self,request):
+        registerData = request.data
+        # print("MYPOST")
+        # print(registerData)
+        serializer = RegistrationSerializer(data = request.data)
+        if not serializer.is_valid():
+            return Response({"status":403, "errors":serializer.errors,"message":"Something went wrong."})
+        serializer.save()
+        return Response({"status":200, "payload":registerData,"message":"Data has been registred."})
+
+
