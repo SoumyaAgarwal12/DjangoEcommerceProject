@@ -4,6 +4,10 @@ from .models import Product, Contact, Registration
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
+# For Login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
 # Create your views here.
 # def index(request):
 #     return HttpResponse("HELLO SHop")
@@ -70,12 +74,29 @@ class RegistrationAPI(APIView):
 
     def post(self,request):
         registerData = request.data
-        # print("MYPOST")
         # print(registerData)
-        serializer = RegistrationSerializer(data = request.data)
-        if not serializer.is_valid():
-            return Response({"status":403, "errors":serializer.errors,"message":"Something went wrong."})
-        serializer.save()
+        mySerializer = RegistrationSerializer(data = request.data)
+        if not mySerializer.is_valid():
+            return Response({"status":403, "errors":mySerializer.errors,"message":"Something went wrong."})
+        # mySerializer.set_password(mySerializer.password)
+        username = request.data['username']
+        email = request.data['email']
+        password = request.data['password']
+        add1 = request.data['address1']
+        add2 = request.data['address2']
+        city_name = request.data['city']
+        zip_code = request.data['zip']
+        state_name = request.data['state']
+        # print("MYPOST")
+        myUser = User.objects.create_user(username,email,password)
+        myUser.address1 = add1
+        myUser.address2 = add2
+        myUser.city_name = city_name
+        myUser.city = zip_code
+        myUser.state = state_name
+        myUser.save()
         return Response({"status":200, "payload":registerData,"message":"Data has been registred."})
 
 
+def loginPage(request):
+    return HttpResponse("HELLO LOGINPAGE")
