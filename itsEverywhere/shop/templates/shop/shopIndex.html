@@ -71,26 +71,29 @@
 {% block addToCart%}
 {% load static %}
 <!-- Button trigger modal -->
-<div class="addToCart" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <img src="{%static 'shop/shopping__cart.png'%}" alt="shopping-cart" width="35px" height="28px"
-        class="cartImg">
-    <h5 class="cartCount">0</h5>
+<div class="addToCart" data-bs-toggle="modal" data-bs-target="#onAddToCart">
+  <img src="{%static 'shop/shopping__cart.png'%}" alt="shopping-cart" width="35px" height="28px" class="cartImg">
+  <h5 class="cartCount">0</h5>
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="onAddToCart" tabindex="-1" aria-labelledby="onAddToCartLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="onAddToCartLabel">Checkout Items</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+        <p class="noProductMsg">Add your Items</p>
+        <ol class="list-group list-group-numbered checkoutItems">
+          <!-- Adding by JS -->
+        </ol>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Checkout</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearCart()">Clear Cart</button>
+        <a href="checkout/" class="btn btn-primary">Checkout</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearCart()">Clear
+          Cart</button>
       </div>
     </div>
   </div>
@@ -116,8 +119,8 @@
     <div class="card" style="width: 18rem;">
       <img class="card-img-top" src="/media/{{i.product_image}}" width="500px" height="300px" alt="Card image cap">
       <div class="card-body">
-        <h5 class="card-title">{{i.product_name}}</h5>
-        <p class="card-text">{{i.desc|slice:"0:85"}}...</p>
+        <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
+        <p class="card-text" id="descpr{{i.id}}">{{i.desc|slice:"0:85"}}...</p>
         <a href="#" id="pr{{i.id}}" class="btn btn-primary cart">
           <span class="atc atcD">Add to Cart</span>
           <span class="addCart cartD">+</span>
@@ -190,16 +193,21 @@
 
   manageAddToCart();
   updateCartCount();
+  showItemsForCheckout();
 
-  function clearCart(){
+  function clearCart() {
     localStorage.removeItem('cart');
     localStorage.removeItem('cartCount');
     updateCartCount();
     $('.atcD').show();
     $('.cartD').hide();
+
+    // $(".checkoutItems").html("Add your Items");
+    $(".innercheckout").remove();
+    $(".noProductMsg").show();
   }
 
-  function updateCartCount(){
+  function updateCartCount() {
     if (localStorage.getItem('cartCount') == null) {
       cartCount = 0;
     } else {
@@ -210,25 +218,25 @@
     $(".cartCount").html(atcCount);
   }
 
-  function manageAddToCart(){  
+  function manageAddToCart() {
     if (localStorage.getItem('cart') == null) {
       cart = {};
     } else {
       cart = JSON.parse(localStorage.getItem('cart'));
     }
 
-    for (var item in cart){
+    for (var item in cart) {
       getProductId = item;
       getProductCount = cart[item];
 
-      if(getProductCount <= 0){
-        $("#"+getProductId).children('.atcD').show();
-        $("#"+getProductId).children('.cartD').hide();
-      } else{
-        $("#"+getProductId).children('.atcD').hide();
-        $("#"+getProductId).children('.cartD').show();
+      if (getProductCount <= 0) {
+        $("#" + getProductId).children('.atcD').show();
+        $("#" + getProductId).children('.cartD').hide();
+      } else {
+        $("#" + getProductId).children('.atcD').hide();
+        $("#" + getProductId).children('.cartD').show();
       }
-      $("#"+getProductId).children('.atcCnt').html(getProductCount);
+      $("#" + getProductId).children('.atcCnt').html(getProductCount);
     }
 
   }
@@ -240,9 +248,9 @@
       cart = JSON.parse(localStorage.getItem('cart'));
     }
     // console.log(cart);
-    getProduct = $(this).parent().attr("id");
-    if (cart[getProduct] == undefined || cart[getProduct] == 0) {
-      cart[getProduct] = 1;
+    getProductId = $(this).parent().attr("id");
+    if (cart[getProductId] == undefined || cart[getProductId] == 0) {
+      cart[getProductId] = 1;
       atcCount++;
     }
     // console.log(cart);
@@ -252,15 +260,19 @@
     localStorage.setItem('cartCount', JSON.stringify(atcCount));
 
     manageAddToCart();
-
     // $(this).html(cartCount);
     // $(this).hasClass("addCart")
+
+    // UpdateCheckoutItems
+    updateCheckout(getProductId);
+
+
   });
 
   $(".addCart").on("click", function () {
     cart = JSON.parse(localStorage.getItem('cart'));
-    getProduct = $(this).parent().attr("id");
-    cart[getProduct] += 1;
+    getProductId = $(this).parent().attr("id");
+    cart[getProductId] += 1;
     atcCount++;
     $(".cartCount").html(atcCount);
 
@@ -270,13 +282,23 @@
     cartItem = JSON.parse(localStorage.getItem('cart'));
     var a = cartItem[$(this).parent().attr("id")];
     $(this).siblings(".atcCnt").html(a);
+    // updateCheckout(getProductId);
+    $("#checkout"+getProductId).html(cart[getProductId]);
   });
 
   $(".minusCart").on("click", function () {
     cart = JSON.parse(localStorage.getItem('cart'));
-    // cart = Object.entries(cart); ??
-    getProduct = $(this).parent().attr("id");
-    cart[getProduct] -= 1;
+    getProductId = $(this).parent().attr("id");
+    cart[getProductId] -= 1;
+    if(cart[getProductId] == 0){
+      delete cart[getProductId];
+      $(".checkout"+getProductId).remove();
+      $(this).siblings(".cartD").hide();
+      $(this).hide();
+      $(this).siblings(".atcD").show();
+    } else{
+      $(this).siblings(".atcCnt").html(cart[getProductId]);
+    }
     atcCount--;
     $(".cartCount").html(atcCount);
 
@@ -287,18 +309,60 @@
       $(".atcD").show();
       localStorage.removeItem('cart', JSON.stringify(cart));
     }
-
-    cartItem = JSON.parse(localStorage.getItem('cart'));
-    if(cartItem != null){
-      var a = cartItem[$(this).parent().attr("id")];
-      if(a == 0){
-        $(this).siblings(".cartD").hide();
-        $(this).hide();
-        $(this).siblings(".atcD").show();
-      }
-      $(this).siblings(".atcCnt").html(a);
-    }
-    
+    $("#checkout"+getProductId).html(cart[getProductId]);
   });
+
+  // Show all selected items in checkout section on loading
+  function showItemsForCheckout() {
+    let checkoutHTML = "";
+    cart = JSON.parse(localStorage.getItem('cart'));
+    if(cart == null){
+      // checkoutHTML = `<p class="noProductMsg">Add your Items</p>`
+      // $(".checkoutItems").html(checkoutHTML);
+      $(".noProductMsg").show();
+      return;
+    } else{
+      $(".noProductMsg").hide();
+    }
+    for (var item in cart) {
+      prName = $("#name" + item).html();
+      prDesc = $("#desc" + item).html();
+      prQty = cart[item];
+      if (prQty != 0) {
+        checkoutHTML += `<li class="list-group-item d-flex justify-content-between align-items-start innercheckout checkout${item}">
+            <div class="ms-2 me-auto">
+              <div class="fw-bold">${prName}</div>
+              ${prDesc}
+            </div>
+            <span class="badge bg-primary rounded-pill" id="checkout${item}">${prQty}</span>
+          </li>`
+      }
+    }
+    $(".checkoutItems").html(checkoutHTML);
+  }
+
+  // On increasing/decreasing the product quantity
+  function updateCheckout(productId) {
+    $(".noProductMsg").hide();
+    let checkoutHTML = $(".checkoutItems").html();
+    prName = $("#name" + productId).html();
+    prDesc = $("#desc" + productId).html();
+    prQty = cart[productId];
+    checkoutHTML += `<li class="list-group-item d-flex justify-content-between align-items-start innercheckout checkout${productId}">
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">${prName}</div>
+          ${prDesc}
+        </div>
+        <span class="badge bg-primary rounded-pill" id="checkout${productId}">${prQty}</span>
+      </li>`
+    $(".checkoutItems").html(checkoutHTML);
+  }
+
+$(".cartD").on("click",function(){
+  cart = JSON.parse(localStorage.getItem('cart'));
+    if(cart == null){
+      $(".noProductMsg").show();
+    } 
+})
 </script>
 {% endblock js %}

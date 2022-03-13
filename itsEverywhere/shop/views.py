@@ -97,6 +97,5 @@ class RegistrationAPI(APIView):
         myUser.save()
         return Response({"status":200, "payload":registerData,"message":"Data has been registred."})
 
-
-def loginPage(request):
-    return HttpResponse("HELLO LOGINPAGE")
+def checkout(request):
+    return render(request,"shop/checkout.html")

@@ -1,0 +1,61 @@
+{% extends '../index.html' %}
+
+{% block body %} 
+<div class="" id="onAddToCart">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="onAddToCartLabel">Checkout Items</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="noProductMsg">Add your Items</p>
+        <ol class="list-group list-group-numbered checkoutItems">
+          <!-- Adding by JS -->
+        </ol>
+      </div>
+      <div class="modal-footer">
+        <a href="checkout/" class="btn btn-primary">Checkout</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearCart()">Clear
+          Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}
+
+{% block js %}
+<script>
+// Show all selected items in checkout section on loading
+$(document).ready(function(){
+  showItemsForCheckout();
+})
+function showItemsForCheckout() {
+  let checkoutHTML = "";
+  cart = JSON.parse(localStorage.getItem('cart'));
+  if(cart == null){
+    // checkoutHTML = `<p class="noProductMsg">Add your Items</p>`
+    // $(".checkoutItems").html(checkoutHTML);
+    $(".noProductMsg").show();
+    return;
+  } else{
+    $(".noProductMsg").hide();
+  }
+  for (var item in cart) {
+    prName = $("#name" + item).html();
+    prDesc = $("#desc" + item).html();
+    prQty = cart[item];
+    if (prQty != 0) {
+      checkoutHTML += `<li class="list-group-item d-flex justify-content-between align-items-start innercheckout checkout${item}">
+          <div class="ms-2 me-auto">
+            <div class="fw-bold">${prName}</div>
+            ${prDesc}
+          </div>
+          <span class="badge bg-primary rounded-pill" id="checkout${item}">${prQty}</span>
+        </li>`
+    }
+  }
+  $(".checkoutItems").html(checkoutHTML);
+}
+</script>
+{% endblock js %}
