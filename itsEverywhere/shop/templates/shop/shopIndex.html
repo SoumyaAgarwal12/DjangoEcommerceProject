@@ -71,7 +71,7 @@
 {% block addToCart%}
 {% load static %}
 <!-- Button trigger modal -->
-<div class="addToCart" data-bs-toggle="modal" data-bs-target="#onAddToCart">
+<div class="addToCart" data-bs-toggle="modal" data-bs-target="#onAddToCart" onclick="showItemsForCheckout();">
   <img src="{%static 'shop/shopping__cart.png'%}" alt="shopping-cart" width="35px" height="28px" class="cartImg">
   <h5 class="cartCount">0</h5>
 </div>
@@ -91,7 +91,10 @@
         </ol>
       </div>
       <div class="modal-footer">
-        <a href="checkout/" class="btn btn-primary">Checkout</a>
+        <form action="checkout/" method="post">{% csrf_token %}
+          <input type="hidden" name="allCheckoutItems" id="allCheckoutItems" value="">
+          <button class="btn btn-primary">Checkout</button>
+        </form>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearCart()">Clear
           Cart</button>
       </div>
@@ -311,15 +314,16 @@
     }
     $("#checkout"+getProductId).html(cart[getProductId]);
   });
-
   // Show all selected items in checkout section on loading
   function showItemsForCheckout() {
     let checkoutHTML = "";
+    let allCheckoutItems = {};
     cart = JSON.parse(localStorage.getItem('cart'));
     if(cart == null){
       // checkoutHTML = `<p class="noProductMsg">Add your Items</p>`
       // $(".checkoutItems").html(checkoutHTML);
       $(".noProductMsg").show();
+      $("#allCheckoutItems").val(JSON.stringify(allCheckoutItems));
       return;
     } else{
       $(".noProductMsg").hide();
@@ -337,8 +341,11 @@
             <span class="badge bg-primary rounded-pill" id="checkout${item}">${prQty}</span>
           </li>`
       }
+      allCheckoutItems[item] = [prQty,prName,prDesc];
+      // allCheckoutItems.push([item,prName,prDesc]);
     }
     $(".checkoutItems").html(checkoutHTML);
+    $("#allCheckoutItems").val(JSON.stringify(allCheckoutItems));
   }
 
   // On increasing/decreasing the product quantity
@@ -356,6 +363,8 @@
         <span class="badge bg-primary rounded-pill" id="checkout${productId}">${prQty}</span>
       </li>`
     $(".checkoutItems").html(checkoutHTML);
+    // allCheckoutItems[productId] = [prQty,prName,prDesc];  ??
+    // $("#allCheckoutItems").val(JSON.stringify(allCheckoutItems));  ??
   }
 
 $(".cartD").on("click",function(){

@@ -1,6 +1,15 @@
 {% extends '../index.html' %}
 
-{% block body %} 
+{% block body %}
+<!-- {{allCheckoutItems}} -->
+<!-- {% for prodId, prodName in allCheckoutItems.items %}
+{{prodId}}
+{{prodName}}
+{{prodName.0}}
+<div class="checkoutprods">
+  <input type="hidden" class="allCheckoutItems" value="{{prodId}}">
+</div>
+{% endfor %} -->
 <div class="" id="onAddToCart">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -11,13 +20,19 @@
       <div class="modal-body">
         <p class="noProductMsg">Add your Items</p>
         <ol class="list-group list-group-numbered checkoutItems">
-          <!-- Adding by JS -->
+        {% for prodId, aboutProd in allCheckoutItems.items %}    <!-- JSON Iteration  -->
+          <li class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+              <div class="fw-bold">{{aboutProd.1}}</div>
+              {{aboutProd.2}}
+            </div>
+            <span class="badge bg-primary rounded-pill" id="checkout${item}">{{aboutProd.0}}</span>
+          </li>
+        {% endfor %}
         </ol>
       </div>
       <div class="modal-footer">
-        <a href="checkout/" class="btn btn-primary">Checkout</a>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="clearCart()">Clear
-          Cart</button>
+        <a href="/shop" class="btn btn-primary">Back</a>
       </div>
     </div>
   </div>
@@ -26,36 +41,59 @@
 
 {% block js %}
 <script>
-// Show all selected items in checkout section on loading
-$(document).ready(function(){
-  showItemsForCheckout();
-})
-function showItemsForCheckout() {
-  let checkoutHTML = "";
-  cart = JSON.parse(localStorage.getItem('cart'));
-  if(cart == null){
-    // checkoutHTML = `<p class="noProductMsg">Add your Items</p>`
-    // $(".checkoutItems").html(checkoutHTML);
-    $(".noProductMsg").show();
-    return;
-  } else{
-    $(".noProductMsg").hide();
-  }
-  for (var item in cart) {
-    prName = $("#name" + item).html();
-    prDesc = $("#desc" + item).html();
-    prQty = cart[item];
-    if (prQty != 0) {
-      checkoutHTML += `<li class="list-group-item d-flex justify-content-between align-items-start innercheckout checkout${item}">
-          <div class="ms-2 me-auto">
-            <div class="fw-bold">${prName}</div>
-            ${prDesc}
-          </div>
-          <span class="badge bg-primary rounded-pill" id="checkout${item}">${prQty}</span>
-        </li>`
+  $(document).ready(function () {
+    cart = JSON.parse(localStorage.getItem('cart'));
+    if (cart == null) {
+      $(".noProductMsg").show();
+      return;
+    } else {
+      $(".noProductMsg").hide();
     }
-  }
-  $(".checkoutItems").html(checkoutHTML);
-}
+    // showItemsForCheckout();
+  })
+//   function showItemsForCheckout() {
+//     // Page specific | START
+//     var list = document.querySelectorAll(".allCheckoutItems");
+//     for (var i = 0; i < list.length; i++) {
+//       let checkoutProducts = ""
+//       var prod = list[i].value.slice(1, -1).split(", ");
+//       prodId = prod[0].slice(1, -1);
+//       prodName = prod[1].slice(1, -1);
+//       prodDesc = prod[2].slice(1, -1);
+//       // checkoutProducts += `<input type="hidden" id="name${prodId}" value="${prodId}">`
+//       checkoutProducts += `<input type="hidden" id="name${prodId}" value="${prodName}">`
+//       checkoutProducts += `<input type="hidden" id="desc${prodId}" value="${prodDesc}">`
+//       $(".checkoutprods")[i].innerHTML = checkoutProducts;
+//     }
+//     // $(".checkoutprods").html(checkoutProducts);
+//     // Page specific | END
+
+//     let checkoutHTML = "";
+//     cart = JSON.parse(localStorage.getItem('cart'));
+//     if (cart == null) {
+//       // checkoutHTML = `<p class="noProductMsg">Add your Items</p>`
+//       // $(".checkoutItems").html(checkoutHTML);
+//       $(".noProductMsg").show();
+//       return;
+//     } else {
+//       $(".noProductMsg").hide();
+//     }
+//     for (var item in cart) {
+//       prName = $("#name" + item).val();
+//       prDesc = $("#desc" + item).val();
+//       prQty = cart[item];
+//       if (prQty != 0) {
+//         checkoutHTML += `<li class="list-group-item d-flex justify-content-between align-items-start innercheckout checkout${item}">
+//           <div class="ms-2 me-auto">
+//             <div class="fw-bold">${prName}</div>
+//             ${prDesc}
+//           </div>
+//           <span class="badge bg-primary rounded-pill" id="checkout${item}">${prQty}</span>
+//         </li>`
+//       }
+//     }
+//     $(".checkoutItems").html(checkoutHTML);
+// }
+
 </script>
 {% endblock js %}

@@ -8,6 +8,8 @@ from .serializers import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
+import json
+
 # Create your views here.
 # def index(request):
 #     return HttpResponse("HELLO SHop")
@@ -32,7 +34,7 @@ def index(request):
         # print(cats)
         catItems = Product.objects.filter(category = cats)
         productsCount = len(catItems)
-        # print(catItems)
+        print("FIRST",catItems)
         # print(productsCount)
         prodCategory.append([catItems, range(0,productsCount)])
     # print(prodCategory)
@@ -57,7 +59,6 @@ def contact(request):
         email = request.POST.get('email','')
         phone = request.POST.get('phone','')
         desc = request.POST.get('description','')
-        print(desc)
         ourContact = Contact(name=name, email=email, phone=phone,desc=desc)
         ourContact.save()
     return render(request,"shop/contact.html")
@@ -98,4 +99,10 @@ class RegistrationAPI(APIView):
         return Response({"status":200, "payload":registerData,"message":"Data has been registred."})
 
 def checkout(request):
-    return render(request,"shop/checkout.html")
+    if request.method == "POST":
+        checkoutItems = request.POST.get('allCheckoutItems','')
+        dct = json.loads(checkoutItems)
+        # print("SECOND",checkoutItems)
+        print("THIRD",dct)
+    param = {"allCheckoutItems":dct}
+    return render(request,"shop/checkout.html",param)
