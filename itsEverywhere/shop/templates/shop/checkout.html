@@ -2,25 +2,18 @@
 
 {% block body %}
 <!-- {{allCheckoutItems}} -->
-<!-- {% for prodId, prodName in allCheckoutItems.items %}
-{{prodId}}
-{{prodName}}
-{{prodName.0}}
-<div class="checkoutprods">
-  <input type="hidden" class="allCheckoutItems" value="{{prodId}}">
-</div>
-{% endfor %} -->
+<!-- Checkout Items | START -->
 <div class="" id="onAddToCart">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="onAddToCartLabel">Checkout Items</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p class="noProductMsg">Add your Items</p>
         <ol class="list-group list-group-numbered checkoutItems">
-        {% for prodId, aboutProd in allCheckoutItems.items %}    <!-- JSON Iteration  -->
+          {% for prodId, aboutProd in allCheckoutItems.items %}
+          <!-- JSON Iteration  -->
           <li class="list-group-item d-flex justify-content-between align-items-start">
             <div class="ms-2 me-auto">
               <div class="fw-bold">{{aboutProd.1}}</div>
@@ -28,15 +21,21 @@
             </div>
             <span class="badge bg-primary rounded-pill" id="checkout${item}">{{aboutProd.0}}</span>
           </li>
-        {% endfor %}
+          {% endfor %}
         </ol>
       </div>
       <div class="modal-footer">
         <a href="/shop" class="btn btn-primary">Back</a>
+        <form action="/shop/placeOrder/" method="post">{% csrf_token %}
+          <input type="hidden" name="allCheckoutItems" id="allCheckoutItems" value="{{allCheckoutItems}}">
+          <button type="submit" class="btn btn-primary">Continue</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
+<!-- Checkout Items | END  -->
+
 {% endblock body %}
 
 {% block js %}
@@ -49,51 +48,7 @@
     } else {
       $(".noProductMsg").hide();
     }
-    // showItemsForCheckout();
   })
-//   function showItemsForCheckout() {
-//     // Page specific | START
-//     var list = document.querySelectorAll(".allCheckoutItems");
-//     for (var i = 0; i < list.length; i++) {
-//       let checkoutProducts = ""
-//       var prod = list[i].value.slice(1, -1).split(", ");
-//       prodId = prod[0].slice(1, -1);
-//       prodName = prod[1].slice(1, -1);
-//       prodDesc = prod[2].slice(1, -1);
-//       // checkoutProducts += `<input type="hidden" id="name${prodId}" value="${prodId}">`
-//       checkoutProducts += `<input type="hidden" id="name${prodId}" value="${prodName}">`
-//       checkoutProducts += `<input type="hidden" id="desc${prodId}" value="${prodDesc}">`
-//       $(".checkoutprods")[i].innerHTML = checkoutProducts;
-//     }
-//     // $(".checkoutprods").html(checkoutProducts);
-//     // Page specific | END
-
-//     let checkoutHTML = "";
-//     cart = JSON.parse(localStorage.getItem('cart'));
-//     if (cart == null) {
-//       // checkoutHTML = `<p class="noProductMsg">Add your Items</p>`
-//       // $(".checkoutItems").html(checkoutHTML);
-//       $(".noProductMsg").show();
-//       return;
-//     } else {
-//       $(".noProductMsg").hide();
-//     }
-//     for (var item in cart) {
-//       prName = $("#name" + item).val();
-//       prDesc = $("#desc" + item).val();
-//       prQty = cart[item];
-//       if (prQty != 0) {
-//         checkoutHTML += `<li class="list-group-item d-flex justify-content-between align-items-start innercheckout checkout${item}">
-//           <div class="ms-2 me-auto">
-//             <div class="fw-bold">${prName}</div>
-//             ${prDesc}
-//           </div>
-//           <span class="badge bg-primary rounded-pill" id="checkout${item}">${prQty}</span>
-//         </li>`
-//       }
-//     }
-//     $(".checkoutItems").html(checkoutHTML);
-// }
 
 </script>
 {% endblock js %}

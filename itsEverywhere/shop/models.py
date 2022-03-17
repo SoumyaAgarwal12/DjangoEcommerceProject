@@ -43,3 +43,15 @@ class Registration(models.Model):
 class checkoutPage(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     checkoutItems = models.CharField(max_length=50)
+
+class Order(models.Model):
+    name = models.CharField(max_length=100)
+    address1 = models.CharField(max_length=1000)
+    address2 = models.CharField(max_length=1000)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zip = models.CharField(max_length=10)
+    checkoutItems = models.CharField(max_length=100000,default="")
+
+    def __str__(self):
+        return self.name

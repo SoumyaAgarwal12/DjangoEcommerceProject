@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Product, Contact, Registration
+from .models import Product, Contact, Registration, Order
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
@@ -103,6 +103,20 @@ def checkout(request):
         checkoutItems = request.POST.get('allCheckoutItems','')
         dct = json.loads(checkoutItems)
         # print("SECOND",checkoutItems)
-        print("THIRD",dct)
+        # print("THIRD",dct)
     param = {"allCheckoutItems":dct}
     return render(request,"shop/checkout.html",param)
+
+def placeOrder(request):
+    if request.method == "POST":
+        name = request.POST.get("name", "")
+        address1 = request.POST.get("address1", "")
+        address2 = request.POST.get("address2", "")
+        city = request.POST.get("city", "")
+        state = request.POST.get("state", "")
+        zip = request.POST.get("zip", "")
+        checkoutItems = request.POST.get('allCheckoutItems','')
+        myOrder = Order(name=name,address1=address1, address2=address2, city=city,state=state,zip=zip,checkoutItems=checkoutItems)
+        myOrder.save()
+    param = {"checkoutItems":checkoutItems}
+    return render(request,"shop/placeOrderForm.html",param)

@@ -9,4 +9,5 @@ urlpatterns = [
     path('product/<int:id>', views.product, name='productView'),
     path('register/', RegistrationAPI.as_view()),
     path('checkout/', views.checkout),
+    path('placeOrder/', views.placeOrder),
 ]
