@@ -31,20 +31,16 @@ class Registration(models.Model):
     username = models.CharField(max_length=50)
     email = models.CharField(max_length=50)
     password = models.CharField(max_length=80)
-    address1 = models.CharField(max_length=200)
-    address2 = models.CharField(max_length=200)
-    city = models.CharField(max_length=100)
-    state = models.CharField(max_length=100)
-    zip = models.CharField(max_length=50)
 
     def __str__(self):
         return self.username
 
-class checkoutPage(models.Model):
+class checkoutPage(models.Model):    # OneToOneField experiment 
     user = models.OneToOneField(User, on_delete=models.CASCADE,primary_key=True)
     checkoutItems = models.CharField(max_length=50)
 
 class Order(models.Model):
+    order_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     address1 = models.CharField(max_length=1000)
     address2 = models.CharField(max_length=1000)

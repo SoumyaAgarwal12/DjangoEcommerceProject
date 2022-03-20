@@ -1,0 +1,14 @@
+{% extends '../index.html' %}
+
+{% block body %}
+<input type="hidden" name="allCheckoutItems" id="allCheckoutItems" value="{{checkoutItems}}">
+{% endblock body %}
+
+{% if thankyou %}
+{% block js %} 
+<script>
+  alert("Congratulations!! Your order has confirmed. Please save your order id {{orderId}} for future.")
+</script>
+{% endblock js %}
+{% endif %}
+

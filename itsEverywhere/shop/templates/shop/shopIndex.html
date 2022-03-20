@@ -124,6 +124,8 @@
       <div class="card-body">
         <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
         <p class="card-text" id="descpr{{i.id}}">{{i.desc|slice:"0:85"}}...</p>
+        <p class="card-text"><b>&#x20b9 {{i.price}}</b></p>
+        <input type="hidden" name="price" id="pricepr{{i.id}}" value="{{i.price}}">
         <a href="#" id="pr{{i.id}}" class="btn btn-primary cart">
           <span class="atc atcD">Add to Cart</span>
           <span class="addCart cartD">+</span>
@@ -320,8 +322,6 @@
     let allCheckoutItems = {};
     cart = JSON.parse(localStorage.getItem('cart'));
     if(cart == null){
-      // checkoutHTML = `<p class="noProductMsg">Add your Items</p>`
-      // $(".checkoutItems").html(checkoutHTML);
       $(".noProductMsg").show();
       $("#allCheckoutItems").val(JSON.stringify(allCheckoutItems));
       return;
@@ -331,6 +331,7 @@
     for (var item in cart) {
       prName = $("#name" + item).html();
       prDesc = $("#desc" + item).html();
+      prPrice = $("#price" + item).val();
       prQty = cart[item];
       if (prQty != 0) {
         checkoutHTML += `<li class="list-group-item d-flex justify-content-between align-items-start innercheckout checkout${item}">
@@ -341,7 +342,7 @@
             <span class="badge bg-primary rounded-pill" id="checkout${item}">${prQty}</span>
           </li>`
       }
-      allCheckoutItems[item] = [prQty,prName,prDesc];
+      allCheckoutItems[item] = [prQty,prName,prDesc, prPrice];
       // allCheckoutItems.push([item,prName,prDesc]);
     }
     $(".checkoutItems").html(checkoutHTML);

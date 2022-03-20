@@ -83,18 +83,8 @@ class RegistrationAPI(APIView):
         username = request.data['username']
         email = request.data['email']
         password = request.data['password']
-        add1 = request.data['address1']
-        add2 = request.data['address2']
-        city_name = request.data['city']
-        zip_code = request.data['zip']
-        state_name = request.data['state']
         # print("MYPOST")
         myUser = User.objects.create_user(username,email,password)
-        myUser.address1 = add1
-        myUser.address2 = add2
-        myUser.city_name = city_name
-        myUser.city = zip_code
-        myUser.state = state_name
         myUser.save()
         return Response({"status":200, "payload":registerData,"message":"Data has been registred."})
 
@@ -109,14 +99,32 @@ def checkout(request):
 
 def placeOrder(request):
     if request.method == "POST":
-        name = request.POST.get("name", "")
-        address1 = request.POST.get("address1", "")
-        address2 = request.POST.get("address2", "")
-        city = request.POST.get("city", "")
-        state = request.POST.get("state", "")
-        zip = request.POST.get("zip", "")
         checkoutItems = request.POST.get('allCheckoutItems','')
-        myOrder = Order(name=name,address1=address1, address2=address2, city=city,state=state,zip=zip,checkoutItems=checkoutItems)
-        myOrder.save()
-    param = {"checkoutItems":checkoutItems}
-    return render(request,"shop/placeOrderForm.html",param)
+        param = {"checkoutItems":checkoutItems}
+        return render(request,"shop/placeOrderForm.html",param)
+    else:
+        return HttpResponse("404-Page not found")
+
+class placeOrderAPI(APIView):
+    def post(self,request):
+        # registerData = request.data
+        # print("YEAH",registerData)
+        mySerializer = PlaceOrderSerializer(data = request.data)
+        if mySerializer.is_valid():
+            name = request.POST.get("name", "")
+            address1 = request.POST.get("address1", "")
+            address2 = request.POST.get("address2", "")
+            city = request.POST.get("city", "")
+            state = request.POST.get("state", "")
+            zip = request.POST.get("zip", "")
+            checkoutItems = request.POST.get('allCheckoutItems','')
+            myOrder = Order(name=name,address1=address1, address2=address2, city=city,state=state,zip=zip,checkoutItems=checkoutItems)
+            myOrder.save()
+
+            thankyou = True
+            orderId = myOrder.order_id
+            param = {"checkoutItems":checkoutItems, "thankyou":thankyou, "orderId":orderId}
+            return render(request,"shop/thankyou.html",param)
+        else:
+            return HttpResponse(mySerializer.errors)
+            # return Response({"status":200, "payload":registerData,"message":"Data has been registred."})
