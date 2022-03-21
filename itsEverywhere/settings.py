@@ -24,7 +24,7 @@ SECRET_KEY = 'tih3-1p#1)1$av*y)t(3b3yuxl)6&%d$vkn7zp#8@fem39%g=8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','itseverywhere.herokuapp.com/']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','itseverywhere.herokuapp.com']
 
 
 # Application definition
