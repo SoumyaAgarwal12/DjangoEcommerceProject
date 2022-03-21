@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -122,7 +123,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # CSRF_COOKIE_SECURE = False  // tries when getting CSRF error on admin login
 
-MEDIA_ROOT = "C:/Users/hp-u/Desktop/wampp content/itsEverywhere/media/"
+MEDIA_ROOT = os.getcwd()+'/media'
+# print("MYROOT",MEDIA_ROOT)
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
 
