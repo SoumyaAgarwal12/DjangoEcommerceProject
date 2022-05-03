@@ -160,8 +160,9 @@
         "email": $("#email").val(),
         "password": $("#password").val(),
       }
+
       $.ajax({
-        url: "http://127.0.0.1:8000/shop/register/",   //Temp
+        url: "http://{{myEnv}}/shop/register/",   //Temp
         type: "POST",
         data: data,
         headers: { "X-CSRFToken": $csrf_token },

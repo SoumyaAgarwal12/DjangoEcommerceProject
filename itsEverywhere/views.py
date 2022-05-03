@@ -6,8 +6,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 # from django.contrib.auth.models import User
 
+from django.conf import settings
+
+
+
 def index(request):
-    return render(request, "index.html")
+    param = {"myEnv" : settings.PROD_ENV}
+    return render(request, "index.html", param)
 
 def loginPage(request):
     return HttpResponse("HELLO LOGINPAGE")
