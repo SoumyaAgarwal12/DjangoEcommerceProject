@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = 'tih3-1p#1)1$av*y)t(3b3yuxl)6&%d$vkn7zp#8@fem39%g=8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','itseverywhere.herokuapp.com/']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','itseverywhere.herokuapp.com']
 
 LOCAL_ENV = '127.0.0.1:8000'
 
@@ -127,6 +128,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # CSRF_COOKIE_SECURE = False  // tries when getting CSRF error on admin login
 
-MEDIA_ROOT = "C:/Users/hp-u/Desktop/wampp content/itsEverywhere/media/"
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = "C:/Users/hp-u/Desktop/wampp content/itsEverywhere/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = "/media/"
