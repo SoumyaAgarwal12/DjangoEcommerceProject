@@ -162,7 +162,7 @@
       }
 
       $.ajax({
-        url: "http://{{myEnv}}/shop/register/",   //Temp
+        url: "{{myEnv}}/shop/register/",   //Temp
         type: "POST",
         data: data,
         headers: { "X-CSRFToken": $csrf_token },

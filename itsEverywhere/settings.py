@@ -30,7 +30,7 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost','itseverywhere.herokuapp.com']
 
 LOCAL_ENV = '127.0.0.1:8000'
 
-PROD_ENV = 'itseverywhere.herokuapp.com'
+PROD_ENV = 'https://itseverywhere.herokuapp.com'
 
 
 # Application definition
